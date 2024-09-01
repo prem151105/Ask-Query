@@ -1,3 +1,29 @@
+# Install necessary packages
+!pip install transformers torch gradio
+
+# Import required libraries
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import gradio as gr
+
+# Load the LLaMA 3.1 model and tokenizer
+model_name = "huggingface/llama-3.1"  # Replace with the actual model path if needed
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
+
+# Function to generate a response
+def generate_response(query):
+    inputs = tokenizer(query, return_tensors="pt")
+    outputs = model.generate(**inputs, max_length=50)
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return response
+
+# Gradio interface
+interface = gr.Interface(fn=generate_response, inputs="text", outputs="text", 
+                         title="Student Management System - Book Information Agent",
+                         description="Ask a question about a book or any topic, and the LLaMA model will provide an answer.")
+
+# Launch the interface
+interface.launch()
 import streamlit as st
 from openai import OpenAI
 
